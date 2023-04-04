@@ -208,18 +208,19 @@ struct VectorContinuousCallback{F1, F2, F3, F4, F5, T, T2, T3, I, R} <:
     abstol::T
     reltol::T2
     repeat_nudge::T3
+    skipinterpolation::Bool
     function VectorContinuousCallback(condition::F1, affect!::F2, affect_neg!::F3, len::Int,
                                       initialize::F4, finalize::F5, idxs::I, rootfind,
                                       interp_points, save_positions, dtrelax::R,
                                       abstol::T, reltol::T2,
-                                      repeat_nudge::T3) where {F1, F2, F3, F4, F5, T, T2,
+                                      repeat_nudge::T3, skipinterpolation::Bool) where {F1, F2, F3, F4, F5, T, T2,
                                                                T3, I, R}
         new{F1, F2, F3, F4, F5, T, T2, T3, I, R}(condition,
                                                  affect!, affect_neg!, len,
                                                  initialize, finalize, idxs, rootfind,
                                                  interp_points,
                                                  BitArray(collect(save_positions)),
-                                                 dtrelax, abstol, reltol, repeat_nudge)
+                                                 dtrelax, abstol, reltol, repeat_nudge, skipinterpolation)
     end
 end
 
@@ -231,13 +232,13 @@ function VectorContinuousCallback(condition, affect!, affect_neg!, len;
                                   save_positions = (true, true),
                                   interp_points = 10,
                                   dtrelax = 1,
-                                  abstol = 10eps(), reltol = 0, repeat_nudge = 1 // 100)
+                                  abstol = 10eps(), reltol = 0, repeat_nudge = 1 // 100, skipinterpolation=false)
     VectorContinuousCallback(condition, affect!, affect_neg!, len,
                              initialize, finalize,
                              idxs,
                              rootfind, interp_points,
                              save_positions, dtrelax,
-                             abstol, reltol, repeat_nudge)
+                             abstol, reltol, repeat_nudge, skipinterpolation)
 end
 
 function VectorContinuousCallback(condition, affect!, len;
@@ -249,12 +250,12 @@ function VectorContinuousCallback(condition, affect!, len;
                                   affect_neg! = affect!,
                                   interp_points = 10,
                                   dtrelax = 1,
-                                  abstol = 10eps(), reltol = 0, repeat_nudge = 1 // 100)
+                                  abstol = 10eps(), reltol = 0, repeat_nudge = 1 // 100, skipinterpolation=false)
     VectorContinuousCallback(condition, affect!, affect_neg!, len, initialize, finalize,
                              idxs,
                              rootfind, interp_points,
                              collect(save_positions),
-                             dtrelax, abstol, reltol, repeat_nudge)
+                             dtrelax, abstol, reltol, repeat_nudge, skipinterpolation)
 end
 
 """
